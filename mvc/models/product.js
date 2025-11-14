@@ -22,6 +22,7 @@ class Product {
     }
 
     save() {
+        this.id = Math.random().toString();
         getProductsFromFile((products) => {
             const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
             products.push(this);
