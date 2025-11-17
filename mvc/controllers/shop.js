@@ -12,12 +12,11 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const prodId = req.params.productId;
-
-  Product.fetchAll((products) => {
-      res.render('shop/product-detail', {
-        prods: products,
-        pageTitle: 'Shop',
-        path: '/products'
+  Product.findById(prodId, product => {
+    res.render('shop/product-detail', {
+        product: product,
+        pageTitle: product.title,
+        path: `/products`
       });
   });
 };
