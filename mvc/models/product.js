@@ -14,21 +14,33 @@ const getProductsFromFile = (cb) => {
 }
 
 class Product {
-    constructor(title, imageUrl, description, price) {
-        this.title = title;
+    constructor(id, title, imageUrl, description, price) {
+        this.id = id;
+        this.title = title.trim();
         this.imageUrl = imageUrl;
-        this.description = description;
+        this.description = description.trim();
         this.price = price;
     }
 
     save() {
-        this.id = Math.random().toString();
         getProductsFromFile((products) => {
             const p = path.join(path.dirname(require.main.filename), 'data', 'products.json');
-            products.push(this);
-            fs.writeFile(p, JSON.stringify(products), err => {
-                console.log(err);
-            });
+
+            if (this.id) {
+                const existingProductIndex = products.findIndex(prod => prod.id === this.id);
+                
+                const updatedProducts = [...products];
+                updatedProducts[existingProductIndex] = this;
+                fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+                    console.log('error', err);
+                });
+            } else {
+                this.id = Math.random().toString();
+                products.push(this);
+                fs.writeFile(p, JSON.stringify(products), err => {
+                    console.log('error', err);
+                });
+            }
         });
     }
 
