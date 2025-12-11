@@ -138,7 +138,7 @@ exports.postOrder = (req, res, next) => {
     })
     .then(products => {
       console.log(products);
-      return req.urder.createOrder()
+      return req.user.createOrder()
         .then(order => {
           order.addProducts(products.map(product => {
             product.orderItem = {
@@ -159,10 +159,16 @@ exports.postOrder = (req, res, next) => {
 }
 
 exports.getOrders = (req, res, next) => {
-    res.render('shop/orders', {
-        path: '/orders',
-        pageTitle: 'Your Orders',
+  req.user.getOrders({ include: ['products'] })
+    .then(orders => {
+      res.render('shop/orders', {
+          path: '/orders',
+          pageTitle: 'Your Orders',
+          orders
+      })
     })
+    .catch(err => console.log(err));
+    
 }
 
 exports.getCheckout = (req, res, next) => {
