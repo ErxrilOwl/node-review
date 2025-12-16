@@ -17,17 +17,27 @@ class User {
   }
 
   addToCart(product) {
-    // const cartProduct = this.cart.items.findIndex(cp => {
-    //     return cp._id === product._id;
-    // });
+    const cartItems = this.cart && this.cart.items ? this.cart.items : [];
+    const cartProductIndex = cartItems.findIndex((cp) => {
+      return cp.productId.toString() === product._id.toString();
+    });
+    let newQuantity = 1;
+    const updatedCartItems = [...cartItems];
+
+    if (cartProductIndex >= 0) {
+      newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+      updatedCartItems[cartProductIndex].quantity = newQuantity;
+    } else {
+      updatedCartItems.push({
+        productId: new ObjectId(product._id),
+        quantity: newQuantity,
+      });
+    }
+
     const updatedCart = {
-      items: [
-        {
-          ...product,
-          quantity: 1,
-        },
-      ],
+      items: updatedCartItems,
     };
+
     const db = getDb();
     db.collection("users").updateOne(
       { _id: this._id },
