@@ -6,9 +6,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const errorController = require('./controllers/error');
-// const mongoConnect = require('./util/database').mongoConnect;
 
-const User = require('./models/user');
+// const User = require('./models/user');
 
 dotenv.config();
 
@@ -24,14 +23,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    User.findById('6941668c9c77fdbc19304f56') // Todo: For update
-        .then(user => {
-            req.user = new User(user.name, user.email, user.cart, user._id);
-            next();
-        })
-        .catch(err => {
-            console.log(err);
-        });
+    // User.findById('6941668c9c77fdbc19304f56') // Todo: For update
+    //     .then(user => {
+    //         req.user = new User(user.name, user.email, user.cart, user._id);
+    //         next();
+    //     })
+    //     .catch(err => {
+    //         console.log(err);
+    //     });
+    next();
 });
 
 app.use('/admin', adminRoutes);
@@ -44,7 +44,3 @@ mongoose.connect(process.env.MONGODB_URI)
         app.listen(3000);    
     })
     .catch(err => console.log(err));
-
-// mongoConnect(() => {
-//     app.listen(3000);
-// });
