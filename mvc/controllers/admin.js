@@ -55,20 +55,22 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   const { productId: prodId, title, price, imageUrl, description } = req.body;
 
-  const product = new Product(title, price, description, imageUrl, prodId);
-
-  return product
-    .save()
-    .then(() => {
+  Product.findById(prodId)
+    .then(product => {
+      product.title = title;
+      product.price = price;
+      product.imageUrl = imageUrl;
+      product.description = description;
+      return product.save();
+    })
+    .then(result => {
       res.redirect("/admin/products");
     })
-    .catch((err) => {
-      console.log(err);
-    });
+    .catch(err => console.log(err))
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render("admin/products", {
         prods: products,
