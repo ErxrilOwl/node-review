@@ -23,15 +23,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-    User.findById('695ba5442ee704667a07e0a2') // Todo: For update
+    User.findById('695ba5442ee704667a07e0a2')
         .then(user => {
             req.user = user;
+            console.log(req.user)
             next();
         })
         .catch(err => {
             console.log(err);
+            next();
         });
-    next();
+    
 });
 
 app.use('/admin', adminRoutes);
@@ -52,8 +54,8 @@ mongoose.connect(process.env.MONGODB_URI)
                 });
                 user.save();
             }
-        })
-        
-        app.listen(3000);    
+
+            app.listen(3000); 
+        });
     })
     .catch(err => console.log(err));
