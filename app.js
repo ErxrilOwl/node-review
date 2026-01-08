@@ -49,7 +49,7 @@ app.use(authRoutes);
 
 app.use(errorController.get404);
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         User.findOne().then(user => {
             if (!user) {
