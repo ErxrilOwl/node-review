@@ -57,20 +57,7 @@ mongoose.connect(process.env.MONGODB_URI)
         app.use(authRoutes);
 
         app.use(errorController.get404);
-
-        User.findOne().then(user => {
-            if (!user) {
-                const newUser = new User({
-                    name: 'Test',
-                    email: 'test@example.com',
-                    cart: { items: [] }
-                });
-                return newUser.save();
-            }
-            return user;
-        }).then(() => {
-            app.listen(3000, () => console.log('Server running on port 3000'));
-        });
-
+        
+        app.listen(3000, () => console.log('Server running on port 3000'));
     })
     .catch(err => console.log(err));

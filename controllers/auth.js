@@ -28,7 +28,30 @@ exports.postLogin = (req, res, next) => {
       .catch(err => console.log('Error Login: ', err));
 };
 
-exports.postSignup = (req, res, next) => {};
+exports.postSignup = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+
+  User.findOne({
+    email: email
+  })
+  .then(userDoc => {
+    if (userDoc) {
+      return res.redirect('/signup');
+    }
+    const user = new User({
+      email: email,
+      password: password,
+      cart: { items: [] }
+    });
+    user.save();
+  })
+  .then(result => {
+    res.redirect('/login');
+  })
+  .catch(err => console.log(err))
+};
 
 
 exports.postLogout = (req, res, next) => {
