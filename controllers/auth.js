@@ -12,11 +12,11 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   User.findById('6964f7a6ec6fe6481416fbbb')
       .then(user => {
-          console.log('User Data: ', user);
           req.session.isLoggedIn = true;
           req.session.user = user;
-
-          res.redirect('/');
+          req.session.save(() => {
+            res.redirect('/');
+          });
       })
       .catch(err => console.log('Error Login: ', err));
 };
