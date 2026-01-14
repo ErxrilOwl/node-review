@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const csrf = require('csurf');
+const flash = require('connect-flash');
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -37,6 +38,7 @@ mongoose.connect(process.env.MONGODB_URI)
         }));
 
         app.use(csrfProtection);
+        app.use(flash());
 
         app.use(async (req, res, next) => {
             if (!req.session.user) return next();
