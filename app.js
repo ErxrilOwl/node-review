@@ -53,6 +53,12 @@ mongoose.connect(process.env.MONGODB_URI)
             }
         });
 
+        app.use((req, res, next) => {
+            res.locals.isAuthenticated = req.session.isLoggedIn;
+            res.locals.csrfToken = req.csrfToken();
+            next();
+        });
+
         const adminRoutes = require('./routes/admin');
         const shopRoutes = require('./routes/shop');
         const authRoutes = require('./routes/auth');
