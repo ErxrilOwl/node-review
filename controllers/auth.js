@@ -40,13 +40,26 @@ exports.getSignup = (req, res, next) => {
   res.render('auth/signup', {
     path: '/signup',
     pageTitle: 'Signup',
-    errorMessage: message
+    errorMessage: message,
+    oldInput: {
+        email: '',
+        password: ''
+      }
   });
 };
 
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/login', {
+      path: '/login',
+      pageTitle: 'Login',
+      errorMessage: errors.array()[0].msg
+    })
+  }
 
   User.findOne({
     email: email
@@ -78,47 +91,38 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const confirmPassword = req.body.confirmPassword;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log(errors.array())
     return res.status(422).render('auth/signup', {
-    path: '/signup',
-    pageTitle: 'Signup',
-    errorMessage: errors.array()[0].msg
-  });
+      path: '/signup',
+      pageTitle: 'Signup',
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email, password: password
+      }
+    });
   }
 
-  User.findOne({
-    email: email
-  })
-  .then(userDoc => {
-    if (userDoc) {
-      req.flash('error', 'Email already exists. Pick another one.');
-      return res.redirect('/signup');
-    }
-    return bcrypt.hash(password, 12)
-      .then(hashedPassword => {
-        const user = new User({
-          email: email,
-          password: hashedPassword,
-          cart: { items: [] }
-        });
-        user.save();
+  bcrypt.hash(password, 12)
+    .then(hashedPassword => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items: [] }
+      });
+      user.save();
+    })
+    .then(result => {
+      res.redirect('/login');
+      return transport.sendMail({
+        to: email,
+        from: 'shop@test.com',
+        subject: 'Signup succeeded',
+        html: '<h1>You successfully signed up!</h1>'
       })
-      .then(result => {
-        res.redirect('/login');
-        return transport.sendMail({
-          to: email,
-          from: 'shop@test.com',
-          subject: 'Signup succeeded',
-          html: '<h1>You successfully signed up!</h1>'
-        })
-      })
-      .catch(err => console.log(err))
-  })
-  .catch(err => console.log(err))
+    })
+    .catch(err => console.log(err));
 };
 
 
