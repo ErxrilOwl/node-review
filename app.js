@@ -71,6 +71,10 @@ mongoose.connect(process.env.MONGODB_URI)
 
         app.use('/500', errorController.get500);
         app.use(errorController.get404);
+
+        app.use((error, req, res, next) => {
+            res.status(500).render('500', { pageTitle: 'Error', path: '/500', isAuthenticated: req.isLoggedIn });
+        })
         
         app.listen(3000, () => console.log('Server running on port 3000'));
     })

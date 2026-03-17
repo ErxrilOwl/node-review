@@ -80,7 +80,7 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: []
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => res.redirect('/500'));
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -119,9 +119,9 @@ exports.postEditProduct = (req, res, next) => {
       product.imageUrl = updatedImageUrl;
       return product.save()
         .then(result => res.redirect('/admin/products'))
-        .catch(err => console.log(err));
+        .catch(err => res.redirect('/500'));
     })
-    .catch(err => console.log(err));
+    .catch(err => res.redirect('/500'));
 };
 
 exports.getProducts = (req, res, next) => {
@@ -136,12 +136,12 @@ exports.getProducts = (req, res, next) => {
         path: '/admin/products'
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => res.redirect('/500'));
 };
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   Product.deleteOne({ _id: prodId, userId: req.user._id })
     .then(() => res.redirect('/admin/products'))
-    .catch(err => console.log(err));
+    .catch(err => res.redirect('/500'));
 };
