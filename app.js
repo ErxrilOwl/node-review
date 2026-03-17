@@ -51,7 +51,7 @@ mongoose.connect(process.env.MONGODB_URI)
                 }
                 next();
             } catch (err) {
-                next(err);
+                throw new Error(err);
             }
         });
 
@@ -69,6 +69,7 @@ mongoose.connect(process.env.MONGODB_URI)
         app.use(shopRoutes);
         app.use(authRoutes);
 
+        app.use('/500', errorController.get500);
         app.use(errorController.get404);
         
         app.listen(3000, () => console.log('Server running on port 3000'));
