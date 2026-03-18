@@ -19,7 +19,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const image = req.body.image;
+  const imageUrl = req.file;
   const price = req.body.price;
   const description = req.body.description;
   const errors = validationResult(req);
@@ -32,7 +32,7 @@ exports.postAddProduct = (req, res, next) => {
         hasError: true,
         product: {
           title: title,
-          image: image,
+          imageUrl: imageUrl,
           price: price,
           description: description
         },
@@ -45,7 +45,7 @@ exports.postAddProduct = (req, res, next) => {
     title: title,
     price: price,
     description: description,
-    image: image,
+    imageUrl: imageUrl,
     userId: req.user
   });
   product
