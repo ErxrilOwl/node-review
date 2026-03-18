@@ -20,7 +20,8 @@ const fileStorage = multer.diskStorage({
         cb(null, 'images');
     },
     filename: (req, file, cb) => {
-        cb(null, new Date().toISOString() + '-' + file.originalname);
+        const datePrefix = new Date().toISOString().replace(/:/g, '-');
+        cb(null, datePrefix + '-' + file.originalname);
     }
 });
 
@@ -92,6 +93,7 @@ mongoose.connect(process.env.MONGODB_URI)
         app.use(errorController.get404);
 
         app.use((error, req, res, next) => {
+            console.log(error);
             res.status(500).render('500', { pageTitle: 'Error', path: '/500', isAuthenticated: req.isLoggedIn });
         })
         
